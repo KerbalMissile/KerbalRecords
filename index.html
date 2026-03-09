@@ -7,18 +7,35 @@
         <link rel="icon" type="image/png" href="KerbalRecordsLogo.png"/>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
         <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:       #0a0a0a;
+            --surface:  #111111;
+            --surface2: #161616;
+            --border:   #1e1e1e;
+            --border2:  #252525;
+            --green:    #00e855;
+            --green-dim:#00b844;
+            --text:     #dddddd;
+            --text-dim: #666666;
+            --text-mid: #999999;
+        }
+
         body {
-            background-color: #0f0f0f;
-            color: #dddddd;
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
         }
 
         header {
-            background-color: #141414;
-            border-bottom: 2px solid #00e855;
+            background-color: var(--surface);
+            border-bottom: 2px solid var(--green);
             padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         header img.header-img {
@@ -26,39 +43,91 @@
             display: block;
         }
 
+        .header-count {
+            font-family: monospace;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+        }
+
+        .header-count span { color: var(--green); }
+
         .hero {
-            padding: 48px 32px 40px;
-            border-bottom: 1px solid #222;
+            padding: 48px 32px 36px;
+            border-bottom: 1px solid var(--border);
         }
 
         .hero h2 {
-            font-size: 1.6rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
             color: #fff;
-            margin: 0 0 12px 0;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
         }
 
         .hero p {
-            color: #888;
-            max-width: 540px;
-            line-height: 1.6;
-            margin: 0;
-            font-size: 0.95rem;
+            color: var(--text-dim);
+            max-width: 520px;
+            line-height: 1.65;
+            font-size: 0.9rem;
         }
 
-        .records {
-            padding: 40px 32px;
+        .tabs-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border2);
+            padding: 0 32px;
+        }
+
+        .tabs {
+            display: flex;
             max-width: 1100px;
             margin: 0 auto;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
 
-        .records h3 {
-            color: #aaa;
-            font-size: 0.8rem;
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin: 0 0 24px 0;
-            border-bottom: 1px solid #222;
-            padding-bottom: 10px;
+            color: var(--text-dim);
+            padding: 14px 22px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .tab:hover { color: var(--text-mid); }
+
+        .tab.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        .tab .tab-count {
+            font-family: monospace;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            margin-left: 6px;
+            opacity: 0.7;
+        }
+
+        .tab.active .tab-count { color: var(--green-dim); opacity: 1; }
+
+        .content {
+            padding: 36px 32px 60px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .grid {
@@ -68,14 +137,26 @@
         }
 
         .card {
-            background-color: #161616;
-            border: 1px solid #252525;
+            background-color: var(--surface2);
+            border: 1px solid var(--border2);
             padding: 20px;
+            transition: border-color 0.2s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            border-color: #00e855;
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--green);
+            opacity: 0;
+            transition: opacity 0.2s;
         }
+
+        .card:hover { border-color: var(--green); transform: translateY(-2px); }
+        .card:hover::after { opacity: 1; }
 
         .card-header {
             display: flex;
@@ -85,275 +166,304 @@
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             border-radius: 50%;
-            background-color: #222;
+            background-color: #1a1a1a;
+            border: 1px solid var(--border2);
             overflow: hidden;
             flex-shrink: 0;
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .avatar-initials {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #00e855;
+            color: var(--green);
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
         }
 
-        .player-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #eee;
-        }
+        .player-name { font-weight: 600; font-size: 0.95rem; color: #eee; }
 
         .player-sub {
-            font-size: 0.75rem;
-            color: #555;
+            font-family: monospace;
+            font-size: 0.68rem;
+            color: var(--text-dim);
             margin-top: 2px;
+            letter-spacing: 0.06em;
         }
 
         .badge {
             display: inline-block;
-            background-color: #0a1f0f;
-            border: 1px solid #00e855;
-            color: #00e855;
-            font-size: 0.72rem;
+            background-color: rgba(0,232,85,0.06);
+            border: 1px solid rgba(0,232,85,0.25);
+            color: var(--green);
+            font-family: monospace;
+            font-size: 0.68rem;
             padding: 3px 8px;
             margin-bottom: 10px;
+            letter-spacing: 0.04em;
         }
 
         .card h4 {
             color: #fff;
-            font-size: 1rem;
-            margin: 0 0 8px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 7px;
+            line-height: 1.4;
         }
 
         .card p {
-            color: #666;
+            color: var(--text-dim);
             font-size: 0.82rem;
             line-height: 1.6;
-            margin: 0 0 14px 0;
+            margin-bottom: 14px;
         }
 
         .screenshot-box {
             width: 100%;
             aspect-ratio: 16/9;
-            background-color: #111;
-            border: 1px dashed #2a2a2a;
+            background-color: #0d0d0d;
+            border: 1px dashed #1e1e1e;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
-        .screenshot-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .screenshot-box span {
-            color: #333;
-            font-size: 0.72rem;
-        }
+        .screenshot-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .screenshot-box span { color: #2a2a2a; font-family: monospace; font-size: 0.68rem; }
 
         .card-date {
-            font-size: 0.7rem;
-            color: #444;
+            font-family: monospace;
+            font-size: 0.67rem;
+            color: #333;
             margin-top: 10px;
+            letter-spacing: 0.05em;
         }
 
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-dim);
+        }
+
+        .empty-icon { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.3; }
+
+        .empty p {
+            font-family: monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── HOW TO ── */
         .how-to {
-            margin: 40px auto 0;
-            background-color: #161616;
-            border: 1px solid #252525;
-            border-left: 3px solid #00e855;
+            margin-top: 48px;
+            background-color: var(--surface2);
+            border: 1px solid var(--border2);
+            border-left: 3px solid var(--green);
             padding: 20px 24px;
-            max-width: 1100px;
         }
 
-        .how-to p {
-            color: #666;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .how-to p strong {
-            color: #ccc;
-        }
+        .how-to p { color: var(--text-dim); font-size: 0.85rem; line-height: 1.65; }
+        .how-to p strong { color: #ccc; }
+        .how-to p + p { margin-top: 10px; }
 
         footer {
-            margin-top: 60px;
             padding: 24px 32px;
-            border-top: 1px solid #1e1e1e;
-            color: #333;
-            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+            color: #2e2e2e;
+            font-size: 0.72rem;
+            font-family: monospace;
+            letter-spacing: 0.05em;
         }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { animation: fadeUp 0.3s ease both; }
         </style>
     </head>
     <body>
+
         <header>
             <img src="KerbalRecordsHeader.png" alt="Kerbal Records" class="header-img"/>
+            <div class="header-count">Total Records: <span id="total-count">0</span></div>
         </header>
+
         <div class="hero">
             <h2>The unofficial Kerbal record board</h2>
             <p>Post your records, share your screenshots, and show off your best missions. Orbit attempts, Mun landings, speed runs, whatever you got.</p>
         </div>
-        <div class="records">
-            <h3>All Records (3)</h3>
-            <div class="grid">
 
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="player1.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">OD</div>
-                        </div>
-                        <div>
-                            <div class="player-name">OurworldDelta2</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Most Mechanically Correct Car</div>
-                    <h4>Fully functioning mechanically accurate car</h4>
-                    <p>A first for Kerbal Space Program cars that have this level of detail and mechanical complexity.</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot1.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot1.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="player2.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">vk</div>
-                        </div>
-                        <div>
-                            <div class="player-name">vanlaukaus</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Highest Capacity Stock SSTO</div>
-                    <h4>An SSTO made with stock parts with the highest passenger capacity</h4>
-                    <p>A new way of looking at high capacity passenger SSTO's in the stock game</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot2.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot2.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="player3.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">Bean</div>
-                        </div>
-                        <div>
-                            <div class="player-name">Bean</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Most detailed and accurate modded X-15</div>
-                    <h4>The most detailed and realistic modded aircraft made in KSP without using pre-made parts for the X-15</h4>
-                    <p>A new way of building realistically</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot3.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot3.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="NO PFP PROVIDED" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">Bane</div>
-                        </div>
-                        <div>
-                            <div class="player-name">Bane</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Most accurate modded B-58</div>
-                    <h4>The most accurate modded B-58 in KSP</h4>
-                    <p>A new meaning to accurate recreations</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot4.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot4.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="player3.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">Bean</div>
-                        </div>
-                        <div>
-                            <div class="player-name">Bean</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Most accurate modded V-2</div>
-                    <h4>The most accurate modded V-2 in KSP</h4>
-                    <p>A new meaning to accurate historical recreations</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot5.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot5.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="avatar">
-                            <img src="player4.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-                            <div class="avatar-initials" style="display:none">KM</div>
-                        </div>
-                        <div>
-                            <div class="player-name">KerbalMissile</div>
-                            <div class="player-sub">record holder</div>
-                        </div>
-                    </div>
-                    <div class="badge">Most accurate modded Ariane 1 & 2</div>
-                    <h4>The most accurate modded Ariane 1 & 2 in KSP</h4>
-                    <p>A new meaning to european accuracy</p>
-                    <div class="screenshot-box">
-                        <img src="screenshot6.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"/>
-                        <span style="display:none">screenshot5.png</span>
-                    </div>
-                    <div class="card-date">submitted 2026-03-08</div>
-                </div>
-
-            </div>
-            <div class="how-to">
-                <p>
-                    <strong>Want to add your record?</strong>
-                    Message KerbalMissile on Discord or Reddit and send a picture of your achievement, what you did, a title (optional), and a pfp picture (also optional).
-                </p>
-                <p style="margin-top: 10px; color: #666; font-size: 0.85rem; line-height: 1.6;">
-                    <strong style="color: #ccc;">Believe you broke a record?</strong>
-                    Also message KerbalMissile and send a video to prove it, a screenshot of it, and optionally, a profile picture.
-                </p>
+        <div class="tabs-wrap">
+            <div class="tabs">
+                <div class="tab active"  data-cat="all"       onclick="switchTab(this)">All Records        <span class="tab-count" id="count-all">0</span></div>
+                <div class="tab"         data-cat="stock"     onclick="switchTab(this)">Stock              <span class="tab-count" id="count-stock">0</span></div>
+                <div class="tab"         data-cat="modded"    onclick="switchTab(this)">Modded             <span class="tab-count" id="count-modded">0</span></div>
+                <div class="tab"         data-cat="stock-rec" onclick="switchTab(this)">Stock Recreations  <span class="tab-count" id="count-stock-rec">0</span></div>
+                <div class="tab"         data-cat="mod-rec"   onclick="switchTab(this)">Modded Recreations <span class="tab-count" id="count-mod-rec">0</span></div>
             </div>
         </div>
+
+        <div class="content">
+            <div class="grid" id="records-grid"></div>
+            <div class="empty" id="empty-state" style="display:none">
+                <div class="empty-icon">🦗</div>
+                <p>No records in this category yet.</p>
+            </div>
+
+            <div class="how-to">
+                <p><strong>Want to add your record?</strong> Message KerbalMissile on Discord or Reddit and send a picture of your achievement, what you did, a title (optional), and a pfp picture (also optional).</p>
+                <p><strong>Believe you broke a record?</strong> Also message KerbalMissile and send a video to prove it, a screenshot of it, and optionally, a profile picture.</p>
+            </div>
+        </div>
+
         <footer>
-            <p>Kerbal Records, community maintained, not affiliated with Squad or Take-Two Interactive</p>
+            <p>Kerbal Records — community maintained — not affiliated with Squad or Take-Two Interactive</p>
         </footer>
+
+        <script>
+        const RECORDS = [
+            {
+                player:     "OurworldDelta2",
+                initials:   "OD",
+                avatar:     "player1.png",
+                badge:      "Most Mechanically Correct Car",
+                title:      "Fully functioning mechanically accurate car",
+                desc:       "A first for Kerbal Space Program cars that have this level of detail and mechanical complexity.",
+                screenshot: "screenshot1.png",
+                date:       "2026-03-08",
+                category:   "modded"
+            },
+            {
+                player:     "vanlaukaus",
+                initials:   "vk",
+                avatar:     "player2.png",
+                badge:      "Highest Capacity Stock SSTO",
+                title:      "An SSTO made with stock parts with the highest passenger capacity",
+                desc:       "A new way of looking at high capacity passenger SSTO's in the stock game",
+                screenshot: "screenshot2.png",
+                date:       "2026-03-08",
+                category:   "stock"
+            },
+            {
+                player:     "Bean",
+                initials:   "Bean",
+                avatar:     "player3.png",
+                badge:      "Most detailed and accurate modded X-15",
+                title:      "The most detailed and realistic modded aircraft made in KSP without using pre-made parts for the X-15",
+                desc:       "A new way of building realistically",
+                screenshot: "screenshot3.png",
+                date:       "2026-03-08",
+                category:   "mod-rec"
+            },
+            {
+                player:     "Bane",
+                initials:   "Bane",
+                avatar:     "player4.png",
+                badge:      "Most accurate modded B-58",
+                title:      "The most accurate modded B-58 in KSP",
+                desc:       "A new meaning to accurate recreations",
+                screenshot: "screenshot4.png",
+                date:       "2026-03-08",
+                category:   "mod-rec"
+            },
+            {
+                player:     "Bean",
+                initials:   "Bean",
+                avatar:     "player3.png",
+                badge:      "Most accurate modded V-2",
+                title:      "The most accurate modded V-2 in KSP",
+                desc:       "A new meaning to accurate historical recreations",
+                screenshot: "screenshot5.png",
+                date:       "2026-03-08",
+                category:   "mod-rec"
+            },
+            {
+                player:     "KerbalMissile",
+                initials:   "KM",
+                avatar:     "player5.png",
+                badge:      "Most accurate modded Ariane 1 & 2",
+                title:      "The most accurate modded Ariane 1 & 2 in KSP",
+                desc:       "A new meaning to european accuracy",
+                screenshot: "screenshot6.png",
+                date:       "2026-03-08",
+                category:   "mod-rec"
+            }
+        ];
+
+        const CAT_LABELS = {
+            'all':       'All Records',
+            'stock':     'Stock',
+            'modded':    'Modded',
+            'stock-rec': 'Stock Recreations',
+            'mod-rec':   'Modded Recreations'
+        };
+
+        function cardHTML(r, idx) {
+            return `
+            <div class="card" style="animation-delay:${idx * 0.05}s">
+                <div class="card-header">
+                    <div class="avatar">
+                        <img src="${r.avatar}" alt="${r.player}"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                        <div class="avatar-initials" style="display:none">${r.initials}</div>
+                    </div>
+                    <div>
+                        <div class="player-name">${r.player}</div>
+                        <div class="player-sub">record holder</div>
+                    </div>
+                </div>
+                <div class="badge">${r.badge}</div>
+                <h4>${r.title}</h4>
+                <p>${r.desc}</p>
+                <div class="screenshot-box">
+                    <img src="${r.screenshot}" alt="screenshot"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+                    <span style="display:none">${r.screenshot}</span>
+                </div>
+                <div class="card-date">submitted ${r.date}</div>
+            </div>`;
+        }
+
+        function render(cat) {
+            const grid  = document.getElementById('records-grid');
+            const empty = document.getElementById('empty-state');
+            const filtered = cat === 'all' ? RECORDS : RECORDS.filter(r => r.category === cat);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+            } else {
+                empty.style.display = 'none';
+                grid.innerHTML = filtered.map((r, i) => cardHTML(r, i)).join('');
+            }
+        }
+
+        function updateCounts() {
+            document.getElementById('total-count').textContent = RECORDS.length;
+            document.getElementById('count-all').textContent   = RECORDS.length;
+            ['stock','modded','stock-rec','mod-rec'].forEach(cat => {
+                document.getElementById('count-' + cat).textContent =
+                    RECORDS.filter(r => r.category === cat).length;
+            });
+        }
+
+        function switchTab(el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            render(el.dataset.cat);
+        }
+
+        updateCounts();
+        render('all');
+        </script>
     </body>
 </html>
